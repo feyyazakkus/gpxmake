@@ -6,11 +6,35 @@
  * @author: Feyyaz Akkuş
  *
  */
- (function (window) {
+(function (root, factory) {
+    
+    console.log(factory);
+
+    if (typeof exports !== 'undefined') {
+        if (typeof module !== 'undefined' && typeof module.exports) {
+            exports = module.exports = factory(root, exports);
+        }
+    }
+    else if (typeof define === 'function' && define.amd) {
+        define(['exports'], function (exports) {
+            root.BoomerangCache = factory(root, exports);
+        });
+    }
+    else {
+        root.GpxMake = factory(root);
+    }
+
+}(this, function () {
 
  	'use strict';
 
-	function _GpxMake() {
+    var elements = {
+      'gpx': ['name', 'desc', 'author', 'url', 'urlname', 'time', 'keyword', 'bounds'],
+      'wpt': ['lat', 'lon', 'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src', 'url', 'urlname', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop', 'ageofdgpsdata', 'dgpsid'],
+      'rte': ['name', 'cmt', 'desc', 'src', 'url', 'urlname']
+    }
+
+	var GpxMake = (function () {
 		
 		var defaults = {
 			extension: '.gpx',
@@ -22,7 +46,7 @@
         var fileOptions = {};
 
 		// consructor
-		var GpxMake = function (options) {			
+		function GpxMake(options) {			
 			fileOptions = utils.extend(defaults, options);
 			this.track = setTrack(fileOptions.track);
 		}
@@ -133,10 +157,7 @@
 		}());
 
 		return GpxMake;
-	}
+	})();
 
-	if (typeof(window.GpxMake) === 'undefined') {
-		window.GpxMake = _GpxMake();
-	}
-
-})(window);
+    return GpxMake;
+}));
