@@ -7,8 +7,6 @@
  *
  */
 (function (root, factory) {
-    
-    console.log(factory);
 
     if (typeof exports !== 'undefined') {
         if (typeof module !== 'undefined' && typeof module.exports) {
@@ -17,7 +15,7 @@
     }
     else if (typeof define === 'function' && define.amd) {
         define(['exports'], function (exports) {
-            root.BoomerangCache = factory(root, exports);
+            root.GpxMake = factory(root, exports);
         });
     }
     else {
@@ -29,16 +27,15 @@
  	'use strict';
 
     var elements = {
-      'gpx': ['name', 'desc', 'author', 'url', 'urlname', 'time', 'keyword', 'bounds'],
-      'wpt': ['lat', 'lon', 'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src', 'url', 'urlname', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop', 'ageofdgpsdata', 'dgpsid'],
-      'rte': ['name', 'cmt', 'desc', 'src', 'url', 'urlname']
+      'gpx': ['name', 'desc', 'author', 'url', 'urlname', 'time', 'keywords', 'bounds'],
+      'rte': ['name', 'cmt', 'desc', 'src', 'url', 'urlname', 'number'],
+      'trk': ['name', 'cmt', 'desc', 'src', 'url', 'urlname', 'number'],
+      'points': ['lat', 'lon', 'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src', 'url', 'urlname', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop', 'ageofdgpsdata', 'dgpsid']
     }
 
 	var GpxMake = (function () {
 		
 		var defaults = {
-			extension: '.gpx',
-			contentType: 'application/xml',
 			version: '1.1',
 			creator: 'gpxmake'
 		};
@@ -46,19 +43,26 @@
         var fileOptions = {};
 
 		// consructor
-		function GpxMake(options) {			
+		function GpxMake(options) {
+
+			this.track = '';
+			this.route = '';
+
 			fileOptions = utils.extend(defaults, options);
-			this.track = setTrack(fileOptions.track);
+
+			if (fileOptions.track) {
+				this.track = setTrack(fileOptions.track);
+			}
 		}
 		
      	// download file
 		GpxMake.prototype.download = function (filename) {
 
-            filename = filename + fileOptions.extension;
+            filename = filename + '.gpx';
 
             var content = setFileContent(fileOptions, this.track);
 
-			var blob = new Blob([content], {'type': fileOptions.contentType});
+			var blob = new Blob([content], {'type': 'application/xml'});
 
 			var link = document.createElement('a');
 			document.body.appendChild(link); // for firefox it's necessary
@@ -78,22 +82,50 @@
 		function setTrack(track) {
 
             var trk = '<trk>\n';
-            trk += track.name ? '<name>' + track.name + '</name>\n' : '';
-            trk += track.cmt ? '<cmt>' + track.cmt + '</cmt>\n' : '';
-            trk += track.desc ? '<desc>' + track.desc + '</desc>\n' : '';
-            trk += track.src ? '<src>' + track.src + '</src>\n' : '';
-            trk += track.url ? '<url>' + track.url + '</url>\n' : '';
-            trk += track.urlname ? '<urlname>' + track.urlname + '</urlname>\n' : '';
-            trk += track.number ? '<number>' + track.number + '</number>\n' : '';
+            // add optinal elements
+		    for (var key in track) {
+		      if (typeof(track[key]) == 'string') {
+		        if (elements.trk.indexOf(key) != -1) {
+		          trk += '<' + key + '>' + track[key] + '</' + key + '>\n';
+		        } else {
+		          console.warn("'" + key + "' is not a valid gpx file element.");
+		        }
+		      }
+		    }
 
             trk += '<trkseg>\n';
 
-            var trkpts = track.trackPoints;
+            var trkpts = track.points;
 
             if (trkpts) {
                 for (var i = 0; i < trkpts.length; i++) {
-                    trk += '<trkpt lat="' + trkpts[i]['latitude'] + '" lon="' + trkpts[i]['longitude'] + '" />\n';
-                };
+
+				  var lat = trkpts[i]['lat'];
+				  var lon = trkpts[i]['lon'];
+
+				  if (lat && lon) {
+				    // add lat, long required elements
+				    trk += '<trkpt lat="' + lat + '" lon="' + lon + '">\n';
+
+				    // add optinal elements
+				    for (var key in trkpts[i]) {
+				      if (key != 'lat' && key != 'lon') {
+				        if (elements.points.indexOf(key) != -1) {
+				          trk += '<' + key + '>' + trkpts[i][key] + '</' + key + '>\n';
+				        } else {
+				          console.warn("'" + key + "' is not a valid gpx file element.");
+				        }
+				      }
+				    }
+
+				    // close trkpt element
+				    trk += '</trkpt>\n'
+
+				  } else {
+				    throw "Trackpoints should have lat and lon information. Please reorganize your data.";
+				  }
+
+				}
             } else {
                 console.warn("No track points defined");
             }
@@ -116,7 +148,7 @@
     			'xmlns="http://www.topografix.com/GPX/1/1">\n';
 
     		// add optional file informations
-
+               
             xml += track;
 			xml += '</gpx>';
 
