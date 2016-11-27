@@ -8,16 +8,16 @@
 </head>
 <body>
 <script type="text/javascript">
-    $.getJSON("data.json", function (data) {
-
+    $.getJSON("data.json", function(data) {
+        console.log(data);
         var gpxMake = new GpxMake({
           version: '1.1',
           creator: 'gpxmake',
-          name: "Example GPX file",
+          metadata: data.metadata,
           track: data.track
         });
         
-        gpxMake.download('example');
+        gpxMake.download('my-gpx-file');
     });
 </script>
 </body>

@@ -1,58 +1,89 @@
 {
-	"version": "1.1",
-	"creator": "gpxmake.js",
-	"name": "Example GPX file",
-	
+	"metadata": {
+		"name": "Example GPX file",
+		"desc": "This is an example gpx file",
+		"author": {
+			"name": "Feyyaz Akkuş",
+			"email": {
+				"id": "feyyazakkus",
+				"domain": "gmail.com"
+			},
+			"link": {
+				"href": "https://github.com/feyyazakkus/",
+				"text": "Github",
+				"type": "web page"
+			}
+		},
+		"copyright": {
+			"author": "Feyyaz Akkuş",
+			"year": "2016",
+			"license": "license link.."
+		},
+		"link": {
+			"href": "https://github.com/feyyazakkus/",
+			"text": "Github",
+			"type": "web page"
+		},
+		"time": "2016-11-27T17:01:42.861Z",
+		"keywords": "keyword1, keyword2",
+		"bounds": {
+			"minlat": "54.0",
+			"minlon": "9.0",
+			"maxlat": "55.0",
+			"maxlon": "10.0"
+		}
+	},
+
 	"track": {
-		"name": "Example Track",
+		"name": "Feyyaz's Track",
 		"desc": "Track description..",
 		"number": "Track 1",
 		"points": [
 			{
-				"lon": "9.860624216140083",
 				"lat": "54.9328621088893",
+				"lon": "9.860624216140083",
 				"time": "23/11/2016 12:01:00"
         	},
         	{
+        		"lat": "54.93293237320851",
 				"lon": "9.86092208681491",
-				"lat": "54.93293237320851",
 				"time": "23/11/2016 12:01:01"
         	},
         	{
+        		"lat": "54.93327743521187",
 				"lon": "9.86187816543752",
-				"lat": "54.93327743521187",
 				"time": "23/11/2016 12:01:02"
         	},
         	{
+        		"lat": "54.93342326167919",
 				"lon": "9.862439849679859",
-				"lat": "54.93342326167919",
 				"time": "23/11/2016 12:01:03"
         	}
 		]
 	},
 
 	"route": {
-		"name": "Example Route",
+		"name": "Feyyaz's Route",
 		"cmt": "Route comment..",
 		"points": [
 			{
-				"lon": "9.860624216140083",
 				"lat": "54.9328621088893",
+				"lon": "9.860624216140083",
 				"name": "Route Point 1"
         	},
         	{
+        		"lat": "54.93293237320851",
 				"lon": "9.86092208681491",
-				"lat": "54.93293237320851",
 				"name": "Route Point 1"
         	},
         	{
+        		"lat": "54.93327743521187",
 				"lon": "9.86187816543752",
-				"lat": "54.93327743521187",
                 "name": "Route Point 1"
         	},
         	{
+        		"lat": "54.93342326167919",
 				"lon": "9.862439849679859",
-				"lat": "54.93342326167919",
                 "name": "Route Point 1"
         	}
 		]
@@ -60,24 +91,24 @@
 
 	"wayPoints": [
 		{
-			"lon": "9.860624216140083",
 			"lat": "54.9328621088893",
-            "name": "Position 1"
+			"lon": "9.860624216140083",
+			"time": "23/11/2016 12:01:00"
     	},
     	{
+    		"lat": "54.93293237320851",
 			"lon": "9.86092208681491",
-			"lat": "54.93293237320851",
-            "name": "Position 2"
+			"time": "23/11/2016 12:01:01"
     	},
     	{
+    		"lat": "54.93327743521187",
 			"lon": "9.86187816543752",
-			"lat": "54.93327743521187",
-            "name": "Position 3"
+			"time": "23/11/2016 12:01:02"
     	},
     	{
+    		"lat": "54.93342326167919",
 			"lon": "9.862439849679859",
-			"lat": "54.93342326167919",
-            "name": "Position 4"
+			"time": "23/11/2016 12:01:03"
     	}
 	]
 
