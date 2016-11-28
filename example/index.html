@@ -3,21 +3,31 @@
 <head>
     <title>Gpxmake.js Example</title>
     <meta charset="UTF-8">
-    <script type="text/javascript" src="jquery-1.12.4.min.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+
+    <script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
     <script type="text/javascript" src="../src/gpxmake.js"></script>
+
 </head>
 <body>
+<div class="container">
+    <h1>Gpxmake.js</h1>
+    <p>Gpxmake.js supports all GPX 1.1 Schema elements. You can set tracks, routes and waypoints.</p>
+    <p>See: <a href="http://topografix.com/gpx/1/1/" target="_blank">GPX 1.1 Schema Documentation</a></p>
+</div>
+
+
 <script type="text/javascript">
     $.getJSON("data.json", function(data) {
         console.log(data);
         var gpxMake = new GpxMake({
-          version: '1.1',
-          creator: 'gpxmake',
           metadata: data.metadata,
-          track: data.track
+          track: data.track,
+          route: data.route
         });
         
-        gpxMake.download('my-gpx-file');
+        //gpxMake.download('my-gpx-file');
     });
 </script>
 </body>

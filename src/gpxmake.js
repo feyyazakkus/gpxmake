@@ -37,8 +37,6 @@
       creator: 'gpxmake'
     };
 
-    var fileOptions = {};
-
     // consructor
     function GpxMake(options) {
 
@@ -47,15 +45,14 @@
       this.route = '';
       this.wayPoints = '';
 
-      //fileOptions = utils.extend(defaults, options);
-      fileOptions = options;
-
-      if (fileOptions.metadata) {
-      	this.metadata = setMetaData(fileOptions.metadata);
+      if (options.metadata) {
+      	this.metadata = setMetaData(options.metadata);
       }
-
-      if (fileOptions.track) {
-        this.track = setTrack(fileOptions.track);
+      if (options.track) {
+        this.track = setTrack(options.track);
+      }
+      if (options.route) {
+        this.route = setRoute(options.route);
       }
     }
 
@@ -64,7 +61,7 @@
 
       filename = filename + '.gpx';
 
-      var content = setFileContent(this.metadata, this.track);
+      var content = setFileContent(this.metadata, this.track, this.route);
 
       var blob = new Blob([content], {
         'type': 'application/xml'
@@ -198,6 +195,20 @@
           } else {
             console.warn("'" + key + "' is not a valid gpx file element.");
           }
+        } else {
+          if (key == 'link') {
+            var link = track['link'];
+            if (link.href) {
+              trk += '<link href="' + link.href + '">';
+              if (link.text) {
+                trk += '<text>' + link.text + '</text>\n';
+              }
+              if (link.type) {
+                trk += '<type>' + link.type + '</type>\n';
+              }
+              trk += '</link>'
+            }
+          }
         }
       }
 
@@ -259,8 +270,93 @@
       return trk;
     }
 
+
+    // set route <rte></rte>
+    function setRoute(route) {
+
+      var rte = '<rte>\n';
+      // add optinal elements
+      for (var key in route) {
+        if (typeof(route[key]) == 'string') {
+          if (elements.trkType.indexOf(key) != -1) {
+            rte += '<' + key + '>' + route[key] + '</' + key + '>\n';
+          } else {
+            console.warn("'" + key + "' is not a valid gpx file element.");
+          }
+        } else {
+          if (key == 'link') {
+            var link = route['link'];
+            if (link.href) {
+              rte += '<link href="' + link.href + '">';
+              if (link.text) {
+                rte += '<text>' + link.text + '</text>\n';
+              }
+              if (link.type) {
+                rte += '<type>' + link.type + '</type>\n';
+              }
+              rte += '</link>'
+            }
+          }
+        }
+      }
+
+      var rtepts = route.points;
+
+      if (rtepts) {
+        for (var i = 0; i < rtepts.length; i++) {
+
+          var lat = rtepts[i]['lat'];
+          var lon = rtepts[i]['lon'];
+
+          if (lat && lon) {
+            // add lat, long required elements
+            rte += '<rtept lat="' + lat + '" lon="' + lon + '">\n';
+
+            // add optinal elements
+            for (var key in rtepts[i]) {
+              if (key != 'lat' && key != 'lon') {
+                if (elements.wptType.indexOf(key) != -1) {
+                  if (key == 'link') {
+                    var link = rtepts[i]['link'];
+                    if (link.href) {
+                      rte += '<link href="' + link.href + '">';
+                      if (link.text) {
+                        rte += '<text>' + link.text + '</text>\n';
+                      }
+                      if (link.type) {
+                        rte += '<type>' + link.type + '</type>\n';
+                      }
+                      rte += '</link>'
+                    }
+                  } else {
+                    rte += '<' + key + '>' + rtepts[i][key] + '</' + key + '>\n'; 
+                  }
+                  
+                } else {
+                  console.warn("'" + key + "' is not a valid gpx file element.");
+                }
+              }
+            }
+
+            // close trkpt element
+            rte += '</rtept>\n'
+
+          } else {
+            throw('Routepoints should have lat and lon information. Please reorganize your data.');
+          }
+        }
+
+      } else {
+        console.warn("No route points defined");
+      }
+
+      rte += '</rte>\n';
+
+      return rte;
+    }
+
     // set xml file content
-    function setFileContent(metadata, track) {
+    function setFileContent(metadata, track, route) {
       
       var xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
         '<gpx xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
@@ -271,6 +367,7 @@
 
       xml += metadata;
       xml += track;
+      xml += route;
       xml += '</gpx>';
 
       return xml;

@@ -38,6 +38,11 @@
 		"name": "Feyyaz's Track",
 		"desc": "Track description..",
 		"number": "Track 1",
+		"link": {
+			"href": "https://example-track.com",
+			"text": "example link associated with track",
+			"type": "web page"
+		},
 		"points": [
 			{
 				"lat": "54.9328621088893",
@@ -65,26 +70,31 @@
 	"route": {
 		"name": "Feyyaz's Route",
 		"cmt": "Route comment..",
+		"link": {
+			"href": "https://example-route.com",
+			"text": "example link associated with route",
+			"type": "web page"
+		},
 		"points": [
 			{
+				"name": "Route Point 1",
 				"lat": "54.9328621088893",
-				"lon": "9.860624216140083",
-				"name": "Route Point 1"
+				"lon": "9.860624216140083"
         	},
         	{
+        		"name": "Route Point 2",
         		"lat": "54.93293237320851",
-				"lon": "9.86092208681491",
-				"name": "Route Point 1"
+				"lon": "9.86092208681491"
         	},
         	{
+        		"name": "Route Point 3",
         		"lat": "54.93327743521187",
-				"lon": "9.86187816543752",
-                "name": "Route Point 1"
+				"lon": "9.86187816543752"
         	},
         	{
+        		"name": "Route Point 4",
         		"lat": "54.93342326167919",
-				"lon": "9.862439849679859",
-                "name": "Route Point 1"
+				"lon": "9.862439849679859"
         	}
 		]
 	},
