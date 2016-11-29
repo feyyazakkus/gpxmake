@@ -20,14 +20,15 @@
 
 <script type="text/javascript">
     $.getJSON("data.json", function(data) {
-        console.log(data);
+
         var gpxMake = new GpxMake({
           metadata: data.metadata,
           track: data.track,
-          route: data.route
+          route: data.route,
+          waypoints: data.waypoints
         });
         
-        //gpxMake.download('my-gpx-file');
+        gpxMake.download('my-gpx-file');
     });
 </script>
 </body>

@@ -43,7 +43,7 @@
 			this.metadata = '';
 			this.track = '';
 			this.route = '';
-			this.wayPoints = '';
+			this.waypoints = '';
 
 			if (options.metadata) {
 				this.metadata = setMetaData(options.metadata);
@@ -54,6 +54,9 @@
 			if (options.route) {
 				this.route = setRoute(options.route);
 			}
+			if (options.waypoints) {
+				this.waypoints = setWaypoints(options.waypoints);
+			}
 		}
 
 		// download file
@@ -61,7 +64,7 @@
 
 			filename = filename + '.gpx';
 
-			var content = setFileContent(this.metadata, this.track, this.route);
+			var content = setFileContent(this.metadata, this.track, this.route, this.waypoints);
 
 			var blob = new Blob([content], {
 				'type': 'application/xml'
@@ -355,8 +358,64 @@
 			return rte;
 		}
 
+		// set waypoints
+		function setWaypoints(waypoints) {
+			
+			var wpt = '';
+
+			if (waypoints) {
+				for (var i = 0; i < waypoints.length; i++) {
+
+					var lat = waypoints[i]['lat'];
+					var lon = waypoints[i]['lon'];
+
+					if (lat && lon) {
+						// add lat, long required elements
+						wpt += '<wpt lat="' + lat + '" lon="' + lon + '">\n';
+
+						// add optinal elements
+						for (var key in waypoints[i]) {
+							if (key != 'lat' && key != 'lon') {
+								if (elements.wptType.indexOf(key) != -1) {
+									if (key == 'link') {
+										var link = waypoints[i]['link'];
+										if (link.href) {
+											wpt += '<link href="' + link.href + '">';
+											if (link.text) {
+												wpt += '<text>' + link.text + '</text>\n';
+											}
+											if (link.type) {
+												wpt += '<type>' + link.type + '</type>\n';
+											}
+											wpt += '</link>'
+										}
+									} else {
+										wpt += '<' + key + '>' + waypoints[i][key] + '</' + key + '>\n';	
+									}
+									
+								} else {
+									console.warn("'" + key + "' is not a valid gpx file element.");
+								}
+							}
+						}
+
+						// close trkpt element
+						wpt += '</wpt>\n'
+
+					} else {
+						throw('Waypoints should have lat and lon information. Please reorganize your data.');
+					}
+				}
+
+			} else {
+				console.warn("No waypoints defined");
+			}
+
+			return wpt;
+		}
+
 		// set xml file content
-		function setFileContent(metadata, track, route) {
+		function setFileContent(metadata, track, route, waypoints) {
 			
 			var xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
 				'<gpx xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
@@ -368,6 +427,7 @@
 			xml += metadata;
 			xml += track;
 			xml += route;
+			xml += waypoints;
 			xml += '</gpx>';
 
 			return xml;
