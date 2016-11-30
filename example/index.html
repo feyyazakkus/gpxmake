@@ -21,14 +21,13 @@
 <script type="text/javascript">
     $.getJSON("data.json", function(data) {
 
-        var gpxMake = new GpxMake({
-          metadata: data.metadata,
+        var gpxmake = Gpxmake({
           track: data.track,
           route: data.route,
           waypoints: data.waypoints
-        });
+        }, {metadata: data.metadata});
         
-        gpxMake.download('my-gpx-file');
+        gpxmake.download('my-gpx-file');
     });
 </script>
 </body>
