@@ -30,31 +30,21 @@
     'wptType': ['lat', 'lon', 'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src', 'url', 'urlname', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop', 'ageofdgpsdata', 'dgpsid']
   }
 
-  var fileOptions = {
+  var fileInfo = {
     creator: 'gpxmake'
   };
 
   // consructor
-  function Gpxmake(data, options) {
+  function Gpxmake(info) {
 
     this.metadata = '';
     this.track = '';
     this.route = '';
     this.waypoints = '';
 
-    fileOptions = utils.extend(fileOptions, options);
-    if (fileOptions.metadata) {
-      this.metadata = setMetaData(fileOptions.metadata);
-    }
-    if (data.track) {
-      this.track = setTrack(data.track);
-    }
-    if (data.route) {
-      this.route = setRoute(data.route);
-    }
-    if (data.waypoints) {
-      this.waypoints = setWaypoints(data.waypoints);
-    }
+    fileInfo = utils.extend(fileInfo, info);
+
+    this.metadata = setMetaData(fileInfo);
   }
 
   // download file
@@ -184,10 +174,10 @@
     return meta;
   }
 
-  // set track <trk></trk>
-  function setTrack(track) {
+  Gpxmake.prototype.addTrack = function(track) {
 
     var trk = '<trk>\n';
+
     // add optinal elements
     for (var key in track) {
       if (typeof(track[key]) == 'string') {
@@ -268,14 +258,15 @@
     trk += '</trkseg>\n';
     trk += '</trk>\n';
 
-    return trk;
+    this.track = trk;
   }
 
 
   // set route <rte></rte>
-  function setRoute(route) {
+  Gpxmake.prototype.addRoute = function(route) {
 
     var rte = '<rte>\n';
+
     // add optinal elements
     for (var key in route) {
       if (typeof(route[key]) == 'string') {
@@ -353,11 +344,11 @@
 
     rte += '</rte>\n';
 
-    return rte;
+    this.route = rte;
   }
 
   // set waypoints
-  function setWaypoints(waypoints) {
+  Gpxmake.prototype.addWaypoints = function(waypoints) {
 
     var wpt = '';
 
@@ -409,7 +400,7 @@
       console.warn("No waypoints defined");
     }
 
-    return wpt;
+    this.waypoints = wpt;
   }
 
   // set xml file content
@@ -464,10 +455,6 @@
     }
   }());
 
-  var api = (function(data, options) {
-    return new Gpxmake(data, options);
-  });
-
-  return api;
+  return Gpxmake;
 
 }));
