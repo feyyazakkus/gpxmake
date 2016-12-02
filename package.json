@@ -1,0 +1,19 @@
+{
+  "name": "gpxmake",
+  "version": "1.0.0",
+  "author": "feyyazakkus",
+  "license": "MIT",
+  "description": "Converting GPS json data to GPX file in pure Javascript",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/feyyazakkus/gpxmake.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.7"
+  }
+}
